@@ -24,6 +24,15 @@ This extension does not add any additional settings. It works out of the box wit
 - **Workspace Dependency**: The extension only works within a workspace that contains Python files (`.py`).
 - **Standard Project Structure**: Assumes a standard Python package structure. Non-standard or deeply nested project structures might lead to incorrect module path detection.
 
+## How to run on local
+```
+nvm use 22
+npm install -g vsce
+vsce package
+```
+
+Right click on 3 dots menu in extension and load the *.vsix file from this folder
+
 ## Release Notes
 
 ### 1.0.0

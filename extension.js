@@ -1,36 +1,61 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-const vscode = require('vscode');
+"use strict";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+const vscode = require("vscode");
+const path = require("path");
 
-/**
- * @param {vscode.ExtensionContext} context
- */
+function getPythonPath(uri) {
+    let cwd = vscode.workspace.workspaceFolders[0].uri.fsPath+path.sep
+    const filePath = uri
+        ? uri.fsPath.replace(cwd,"")
+        : vscode.window.activeTextEditor.document.fileName.replace(cwd,"");
+
+    const splittedPath = filePath.split(path.sep);
+    if (
+        splittedPath.length === 0 ||
+        !splittedPath[splittedPath.length - 1].endsWith(".py")
+    ) {
+        return "";
+    }
+    
+    const fileName = splittedPath.pop();
+    
+    // removing extension
+    let pythonPath = [fileName.substring(0, fileName.lastIndexOf("."))]
+    
+    while (
+        splittedPath.length > 0 
+    ) {
+        pythonPath.unshift(splittedPath.pop());
+        // vscode.window.showInformationMessage("splittedPath: "+splittedPath)
+        // vscode.window.showInformationMessage("pythonPath: "+pythonPath)
+    }
+
+    return pythonPath.join(".");
+}
+
+function runPython(uri) {
+
+    const pythonPath = getPythonPath(uri);
+    // vscode.window.showInformationMessage("pythonPath: "+pythonPath)
+    
+    const terminal = vscode.window.activeTerminal || vscode.window.createTerminal();
+    terminal.show(true);
+    terminal.sendText("python -m "+pythonPath);
+
+}
+
+
 function activate(context) {
+    
+    let disposable = vscode.commands.registerCommand(
+        "extension.runPython",
+        runPython
+    );
+    context.subscriptions.push(disposable);
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "python-module-run" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('python-module-run.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from python_module_run!');
-	});
-
-	context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
-function deactivate() {}
+exports.activate = activate;
 
-module.exports = {
-	activate,
-	deactivate
-}
+function deactivate() { }
+exports.deactivate = deactivate;

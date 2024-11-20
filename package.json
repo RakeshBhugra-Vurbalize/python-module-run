@@ -1,5 +1,6 @@
 {
   "name": "python-module-run",
+  "publisher": "RakeshBhugra",
   "displayName": "python_module_run",
   "description": "runs 'python -m ...'",
   "version": "0.0.1",
@@ -12,10 +13,57 @@
   "activationEvents": [],
   "main": "./extension.js",
   "contributes": {
-    "commands": [{
-      "command": "python-module-run.helloWorld",
-      "title": "Hello World"
-    }]
+    "commands": [
+      {
+        "command": "extension.runPython",
+        "title": "python -m",
+        "when": "resourceLangId == python"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.runPython",
+        "key": "cmd+1"
+      },
+      {
+        "command": "extension.runPython",
+        "key": "cmd+Enter"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.runPython",
+          "group": "navigation",
+          "title": "Run Python",
+          "when": "resourceLangId == python"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "extension.runPython",
+          "group": "navigation",
+          "title": "Run Python",
+          "when": "resourceLangId == python"
+        }
+      ],
+      "editor/title/run": [
+        {
+          "when": "resourceLangId == python",
+          "command": "extension.runPython",
+          "title": "Run Python",
+          "group": "navigation"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "extension.runPython",
+          "group": "navigation",
+          "title": "Run Python",
+          "when": "resourceLangId == python"
+        }
+      ]
+    }
   },
   "scripts": {
     "lint": "eslint .",
@@ -23,7 +71,7 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.95.0",
+    "@types/vscode": "^1.94.0",
     "@types/mocha": "^10.0.9",
     "@types/node": "20.x",
     "eslint": "^9.13.0",
